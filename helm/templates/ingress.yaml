@@ -17,7 +17,11 @@ metadata:
      cert-manager.io/cluster-issuer: acme-issuer
 spec:
   rules:
+    {{- if eq .Values.deployment.env "prod" }}
+  - host: "nikvak.com"
+    {{- else  }}
   - host: "{{ .Values.deployment.env }}.nikvak.com"
+    {{ end }}
     http:
       paths:
       - path: /
@@ -29,5 +33,9 @@ spec:
               number: {{ .Values.deployment.port }}
   tls:
   - hosts:
+    {{- if eq .Values.deployment.env "prod" }}
+    - "nikvak.com"
+    {{- else }}
     - "{{ .Values.deployment.env }}.nikvak.com"
+    {{ end }}
     secretName: myingress-cert
